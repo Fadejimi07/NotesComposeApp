@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.notesapp.repository.NotesRepository
 import com.example.notesapp.roomdb.NoteDb
+import com.example.notesapp.screens.DisplayNotesList
 import com.example.notesapp.ui.theme.NotesAppTheme
 import com.example.notesapp.viewmodel.NoteViewModel
 import com.example.notesapp.viewmodel.NoteViewModelFactory
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
 
                 // Display All Records in Room DB
                 val notes by viewModel.allNotes.collectAsStateWithLifecycle()
-
+                DisplayNotesList(notes)
             }
         }
     }
