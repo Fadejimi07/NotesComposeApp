@@ -22,7 +22,11 @@ import com.example.notesapp.viewmodel.NoteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DisplayDialog(viewModel: NoteViewModel) {
+fun DisplayDialog(
+    viewModel: NoteViewModel,
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+) {
     var title by remember {
         mutableStateOf("")
     }
@@ -35,43 +39,46 @@ fun DisplayDialog(viewModel: NoteViewModel) {
         mutableStateOf(Color.Blue)
     }
 
-    AlertDialog(
-        onDismissRequest = {},
-        confirmButton = {
-            Button(onClick = {
-                val note = Note(0, title, description, selectedColor.toArgb())
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            confirmButton = {
+                Button(onClick = {
+                    val note = Note(0, title, description, selectedColor.toArgb())
 
-                viewModel.insert(note)
-            }) {
-                Text(text = "Save Note")
+                    viewModel.insert(note)
+
+                }) {
+                    Text(text = "Save Note")
+                }
+            },
+            dismissButton = {
+                Button(onClick = onDismiss) {
+                    Text(text = "Cancel")
+                }
+            },
+            title = { Text(text = "Enter Note") },
+            text = {
+                Column {
+                    TextField(
+                        value = title,
+                        onValueChange = { title = it },
+                        label = { Text(text = "Note title") }
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        label = { Text(text = "Note Description") }
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Color picker composable
+                }
             }
-        },
-        dismissButton = {
-            Button(onClick = { }) {
-                Text(text = "Cancel")
-            }
-        },
-        title = { Text(text = "Enter Note") },
-        text = {
-            Column {
-                TextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text(text = "Note title") }
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text(text = "Note Description") }
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Color picker composable
-            }
-        }
-    )
+        )
+    }
 }

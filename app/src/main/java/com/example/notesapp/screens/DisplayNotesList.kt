@@ -11,10 +11,10 @@ import androidx.compose.ui.unit.dp
 import com.example.notesapp.roomdb.Note
 
 @Composable
-fun DisplayNotesList(notes: List<Note>) {
+fun DisplayNotesList(notes: List<Note>, modifier: Modifier) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp)
     ) {
         items(notes) { note ->

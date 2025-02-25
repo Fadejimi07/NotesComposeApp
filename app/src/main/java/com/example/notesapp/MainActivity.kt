@@ -4,10 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.notesapp.repository.NotesRepository
@@ -30,19 +38,23 @@ class MainActivity : ComponentActivity() {
         val repository = NotesRepository(database.notesDao)
 
         // viewmodel factory
-        val viewMokdelFactory = NoteViewModelFactory(repository)
+        val viewModelFactory = NoteViewModelFactory(repository)
 
         // ViewModel
         val viewModel = ViewModelProvider(
-            this, viewMokdelFactory
+            this, viewModelFactory
         )[NoteViewModel::class.java]
         viewModel.getAllNotes()
 
         setContent {
             NotesAppTheme {
-                // Display All Records in Room DB
                 val notes by viewModel.allNotes.collectAsStateWithLifecycle()
-                DisplayNotesList(notes)
+                // Display All Records in Room DB
+                Scaffold(
+                    floatingActionButton = { MyFAB(viewModel) }
+                ) { innerPadding ->
+                    DisplayNotesList(notes = notes, modifier = Modifier.padding(innerPadding))
+                }
             }
         }
     }
@@ -50,9 +62,22 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyFAB(viewModel: NoteViewModel) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    DisplayDialog(
+        viewModel = viewModel,
+        showDialog = showDialog,
+    ) {
+        showDialog = false
+    }
     FloatingActionButton(
-        onClick = { DisplayDialog(viewModel = viewModel) },
+        onClick = { showDialog = true },
         containerColor = Color.Blue,
         contentColor = Color.White
-    ) { }
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.baseline_add_24),
+            contentDescription = "Add Note"
+        )
+    }
 }
