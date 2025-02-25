@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -14,7 +15,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import com.example.notesapp.roomdb.Note
 import com.example.notesapp.viewmodel.NoteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +37,20 @@ fun DisplayDialog(viewModel: NoteViewModel) {
 
     AlertDialog(
         onDismissRequest = {},
-        confirmButton = {},
+        confirmButton = {
+            Button(onClick = {
+                val note = Note(0, title, description, selectedColor.toArgb())
+
+                viewModel.insert(note)
+            }) {
+                Text(text = "Save Note")
+            }
+        },
+        dismissButton = {
+            Button(onClick = { }) {
+                Text(text = "Cancel")
+            }
+        },
         title = { Text(text = "Enter Note") },
         text = {
             Column {
